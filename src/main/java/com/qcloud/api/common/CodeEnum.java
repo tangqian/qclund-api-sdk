@@ -1,4 +1,4 @@
-package com.qcloud.common;
+package com.qcloud.api.common;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,10 +12,10 @@ public enum CodeEnum {
 	SUCCESS(0, "成功"), 
 	C_2300(-2300, "api sdk throw exception"),
 	C_2700(-2700, "api sdk throw exception"),
-	C_2800(-2800, "api sdk throw exception"),
 	C_3000(-3000, "api sdk throw exception"),
 	C_3001(-3001, "api sdk throw exception"),
 	C_3003(-3003, "api sdk throw exception"),
+	C4000(4000, "请求参数非法"), 
 	C4100(4100, "鉴权失败"), 
 	C4200(4200, "请求过期"), 
 	C4300(4300, "拒绝访问"), 

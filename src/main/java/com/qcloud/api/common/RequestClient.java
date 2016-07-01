@@ -1,4 +1,4 @@
-package com.qcloud.common;
+package com.qcloud.api.common;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -24,40 +24,46 @@ import javax.net.ssl.SSLSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.qcloud.common.Sign;
 import com.qcloud.utils.MD5;
 
 /**
- * @brief 请求调用类
+ * @brief 请求调用客户端类
  * @author robinslsun
  */
-public class Request {
-	protected static String requestUrl = "";
-	protected static String rawResponse = "";
-	protected static String version = "SDK_JAVA_1.3";
-	protected static int timeOut = 100;// 设置连接主机的超时时间，单位：毫秒，可以根据实际需求合理更改
-										// timeOut的值。
+public final class RequestClient {
 
-	private static Logger logger = LoggerFactory.getLogger(Request.class);
-
+	private static final Logger logger = LoggerFactory.getLogger(RequestClient.class);
+	private static final String version = "SDK_JAVA_1.3";
 	private static final Random random = new Random(System.currentTimeMillis());
+	private static final int timeOut = 100;// 设置连接主机的超时时间，单位：毫秒，可以根据实际需求合理更改timeOut的值。
 
-	public static String getRequestUrl() {
+	private IdentityConfig identity;
+
+	private String requestUrl;
+
+	private String rawResponse;
+
+	public RequestClient(IdentityConfig identity) {
+		this.identity = identity;
+	}
+
+	public String getRequestUrl() {
 		return requestUrl;
 	}
 
-	public static String getRawResponse() {
+	public String getRawResponse() {
 		return rawResponse;
 	}
 
-	public static String generateUrl(TreeMap<String, Object> params, String secretId, String secretKey, String requestMethod, String requestHost,
-			String requestPath) throws UnsupportedEncodingException {
-		initParam(params, secretId, secretKey, requestMethod, requestHost, requestPath);
+	public String generateUrl(String requestMethod, String requestUrl, TreeMap<String, Object> params) throws UnsupportedEncodingException {
+		initParam(requestMethod, requestUrl, params);
 		if (params.get("Action").toString().equals("MultipartUploadVodFile")) {
-			String url = combineUrl(false, requestHost, requestPath);
+			String url = combineHttpUrl(requestUrl);
 			url = combineParmas2Url(url, params);
 			return url;
 		} else {
-			String url = combineUrl(true, requestHost, requestPath);
+			String url = combineHttpsUrl(requestUrl);
 			if (requestMethod.equals("GET")) {
 				url = combineParmas2Url(url, params);
 			}
@@ -65,35 +71,31 @@ public class Request {
 		}
 	}
 
-	public static String send(TreeMap<String, Object> params, String secretId, String secretKey, String requestMethod, String requestHost,
-			String requestPath, File file) {
-		initParam(params, secretId, secretKey, requestMethod, requestHost, requestPath);
-
+	public String send(String requestMethod, String requestUrl, TreeMap<String, Object> params, File file) {
+		initParam(requestMethod, requestUrl, params);
 		try {
 			if (params.get("Action").toString().equals("MultipartUploadVodFile")) {
-				String url = combineUrl(false, requestHost, requestPath);
+				String url = combineHttpUrl(requestUrl);
 				url = combineParmas2Url(url, params);
-				logger.info(url);
-				return sendMultipartUploadVodFileRequest(url, params, requestMethod, file);
+				return sendMultipartUploadVodFileRequest(requestMethod, url, params, file);
 			} else {
-				String url = combineUrl(true, requestHost, requestPath);
+				String url = combineHttpsUrl(requestUrl);
 				if (requestMethod.equals("GET")) {
 					url = combineParmas2Url(url, params);
 				}
-				logger.info(url);
-				return sendRequest(url, params, requestMethod, file);
+				return sendRequest(requestMethod, url, params, file);
 			}
 		} catch (UnsupportedEncodingException e) {
+			logger.error("com.qcloud.Common.Request:129", e);
 			String result = "{\"code\":-2300,\"location\":\"com.qcloud.Common.Request:129\",\"message\":\"api sdk throw exception! " + e.toString()
 					+ "\"}";
 			return result;
 		}
 	}
 
-	private static void initParam(TreeMap<String, Object> params, String secretId, String secretKey, String requestMethod, String requestHost,
-			String requestPath) {
+	private void initParam(String requestMethod, String requestUrl, TreeMap<String, Object> params) {
 		if (!params.containsKey("SecretId"))
-			params.put("SecretId", secretId);
+			params.put("SecretId", identity.getSecretId());
 
 		if (!params.containsKey("Nonce"))
 			params.put("Nonce", random.nextInt(java.lang.Integer.MAX_VALUE));
@@ -103,39 +105,36 @@ public class Request {
 
 		params.put("RequestClient", version);
 
-		String plainText = Sign.makeSignPlainText(requestMethod, requestHost+requestPath, params);
+		String plainText = Sign.makeSignPlainText(requestMethod, requestUrl, params);
 		try {
-			params.put("Signature", Sign.sign(plainText, secretKey));
+			params.put("Signature", Sign.sign(plainText, identity.getSecretKey()));
 		} catch (Exception e) {
 			logger.error("Sign error", e);
 		}
 	}
 
-	private static String combineUrl(boolean isHttps, String requestHost, String requestPath) {
-		String http = isHttps ? "https://" : "http://";
-		String url = http + requestHost + requestPath;
-		return url;
+	private static String combineHttpUrl(String requestUrl) {
+		return "http://" + requestUrl;
+	}
+
+	private static String combineHttpsUrl(String requestUrl) {
+		return "https://" + requestUrl;
 	}
 
 	private static String combineParmas2Url(String url, Map<String, Object> requestParams) throws UnsupportedEncodingException {
-		try {
-			StringBuilder sb = new StringBuilder(url);
-			if (url.indexOf('?') > 0) {
-				sb.append('&');
-			} else {
-				sb.append('?');
-			}
-			sb.append(getParamStr(requestParams));
-
-			url = sb.toString();
-			return url;
-		} catch (UnsupportedEncodingException e) {
-			logger.error("UnsupportedEncodingException", e);
-			throw e;
+		StringBuilder sb = new StringBuilder(url);
+		if (url.indexOf('?') > 0) {
+			sb.append('&');
+		} else {
+			sb.append('?');
 		}
+		sb.append(getParamStr(requestParams));
+
+		url = sb.toString();
+		return url;
 	}
 
-	private static String sendRequest(String url, Map<String, Object> requestParams, String requestMethod, File file) {
+	private String sendRequest(String requestMethod, String url, Map<String, Object> requestParams, File file) {
 		String result = "";
 		BufferedReader in = null;
 		try {
@@ -150,6 +149,7 @@ public class Request {
 			in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			result = getResponse(in);
 		} catch (Exception e) {
+			logger.error("com.qcloud.Common.Request:225", e);
 			result = "{\"code\":-2700,\"location\":\"com.qcloud.Common.Request:225\",\"message\":\"api sdk throw exception! " + e.toString() + "\"}";
 		} finally {
 			// 使用finally块来关闭输入流
@@ -158,15 +158,13 @@ public class Request {
 					in.close();
 				}
 			} catch (Exception e2) {
-				result = "{\"code\":-2800,\"location\":\"com.qcloud.Common.Request:234\",\"message\":\"api sdk throw exception! " + e2.toString()
-						+ "\"}";
 			}
 		}
 		rawResponse = result;
 		return result;
 	}
 
-	private static String sendMultipartUploadVodFileRequest(String url, Map<String, Object> requestParams, String requestMethod, File file) {
+	private String sendMultipartUploadVodFileRequest(String requestMethod, String url, Map<String, Object> requestParams, File file) {
 		String result = "";
 		BufferedReader in = null;
 		try {
@@ -207,6 +205,7 @@ public class Request {
 			in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			result = getResponse(in);
 		} catch (Exception e) {
+			logger.error("com.qcloud.Common.Request:345", e);
 			result = "{\"code\":-3000,\"location\":\"com.qcloud.Common.Request:345\",\"message\":\"api sdk throw exception! " + e.toString() + "\"}";
 		} finally {
 			// 使用finally块来关闭输入流
@@ -252,8 +251,8 @@ public class Request {
 			String contentType = URLConnection.getFileNameMap().getContentTypeFor(file.getAbsolutePath());
 			if (contentType == null) {
 				contentType = "application/octet-stream";
-	        }
-			
+			}
+
 			strBuf = new StringBuilder();
 			strBuf.append("\r\n").append("--").append(BOUNDARY).append("\r\n");
 			strBuf.append("Content-Disposition: form-data; name=\"entityFile\"; filename=\"" + fileName + "\"\r\n");
@@ -309,12 +308,5 @@ public class Request {
 			sb.append(key).append('=').append(URLEncoder.encode(requestParams.get(key).toString(), "utf-8"));
 		}
 		return sb.toString();
-	}
-	
-	public static void main(String[] args) {
-		//File file = new File("d:\\exhibition-daily.log");
-		File file = new File("d:\\test.txt");
-		String contentType = URLConnection.getFileNameMap().getContentTypeFor(file.getAbsolutePath());
-		System.out.println(contentType);
 	}
 }

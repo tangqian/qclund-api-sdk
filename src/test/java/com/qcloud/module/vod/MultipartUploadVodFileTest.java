@@ -1,6 +1,8 @@
 package com.qcloud.module.vod;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 import com.alibaba.fastjson.JSONObject;
@@ -15,7 +17,7 @@ import com.qcloud.utils.SHA1;
  */
 public class MultipartUploadVodFileTest {
 	public static void main(String[] args) {
-		TreeMap<String, Object> config = new TreeMap<String, Object>();
+		Map<String, String> config = new HashMap<String, String>();
 
 		config.put("SecretId", "你的secretId");
 		config.put("SecretKey", "你的secretKey");

@@ -43,9 +43,16 @@ public class Sign {
 		return sig;
 	}
 
-	public static String makeSignPlainText(String requestMethod, String requestHost, String requestPath, TreeMap<String, Object> requestParams) {
+	/**
+	 * 
+	 * @param requestMethod GET/POST
+	 * @param requestUrl =请求主机 +请求路径(不带http前缀)
+	 * @param requestParams
+	 * @return
+	 */
+	public static String makeSignPlainText(String requestMethod, String requestUrl, TreeMap<String, Object> requestParams) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(requestMethod).append(requestHost).append(requestPath).append(buildParamStr(requestParams, requestMethod));
+		sb.append(requestMethod).append(requestUrl).append(buildParamStr(requestParams, requestMethod));
 		return sb.toString();
 	}
 

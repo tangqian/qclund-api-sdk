@@ -2,6 +2,7 @@ package com.qcloud;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
+import java.util.Map;
 import java.util.TreeMap;
 
 import com.qcloud.module.Base;
@@ -20,7 +21,7 @@ public class QcloudApiModuleCenter {
 	 * @param module 实际模块实例
 	 * @param config 模块配置参数
 	 */
-	public QcloudApiModuleCenter(Base module, TreeMap<String, Object> config){
+	public QcloudApiModuleCenter(Base module, Map<String, String> config){
 		this.module = module;
 		this.module.setConfig(config);
 	}
@@ -55,21 +56,5 @@ public class QcloudApiModuleCenter {
 			}
 		}
 		return module.call(actionName, params);
-	}
-	
-	public void setConfigSecretId(String secretId) {
-		module.setConfigSecretId(secretId);
-	}
-
-	public void setConfigSecretKey(String secretKey) {
-		module.setConfigSecretKey(secretKey);
-	}
-
-	public void setConfigDefaultRegion(String region) {
-		module.setConfigDefaultRegion(region);
-	}
-
-	public void setConfigRequestMethod(String method) {
-		module.setConfigRequestMethod(method);
 	}
 }

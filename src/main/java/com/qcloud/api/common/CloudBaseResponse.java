@@ -1,6 +1,7 @@
-package com.qcloud.common.dto;
+package com.qcloud.api.common;
 
-import com.qcloud.common.CodeEnum;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
 
 /**
  * 腾讯云接口基本响应对象
@@ -39,14 +40,23 @@ public class CloudBaseResponse {
 	public void setLocation(String location) {
 		this.location = location;
 	}
+	
+	public boolean isSuccess(){
+		return code == CodeEnum.SUCCESS.getCode();
+	}
 
 	public String getCodeDetail() {
-		String detail = "Error#" + code;
+		String detail = "Code#" + code;
 		CodeEnum codeEnum = CodeEnum.getEnum(code);
 		if (codeEnum != null) {
 			detail += ",Info=" + codeEnum.getMeaning();
 		}
 		return detail;
 	}
+	
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this) + "\r\n" + getCodeDetail();
+    }
 
 }

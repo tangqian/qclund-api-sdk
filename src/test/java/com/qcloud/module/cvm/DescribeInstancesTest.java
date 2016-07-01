@@ -1,5 +1,6 @@
 package com.qcloud.module.cvm;
 
+import java.util.Map;
 import java.util.TreeMap;
 
 import com.alibaba.fastjson.JSONObject;
@@ -15,7 +16,7 @@ public class DescribeInstancesTest {
 
 	public static void main(String[] args) {
 		/* 如果是循环调用下面举例的接口，需要从此处开始你的循环语句。切记！ */
-		TreeMap<String, Object> config = new TreeMap<String, Object>();
+		Map<String, String> config = new TreeMap<String, String>();
 		config.put("SecretId", "AKIDc7nRqE2zj4Ofv1wXHbhaYTba4sCIjazr");
 		config.put("SecretKey", "cfwMPsQIYhFM7H0VjzeAOgNE4AzNvutg");
 		/* 请求方法类型 POST、GET */

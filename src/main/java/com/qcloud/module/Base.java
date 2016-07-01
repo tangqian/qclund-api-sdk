@@ -2,6 +2,7 @@ package com.qcloud.module;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 import java.util.TreeMap;
 
 import com.qcloud.common.Request;
@@ -14,36 +15,35 @@ public abstract class Base {
 	protected String defaultRegion = "";
 	protected String requestMethod = "GET";
 
-	public void setConfig(TreeMap<String, Object> config) {
+	public void setConfig(Map<String, String> config) {
 		if (config == null)
 			return;
 		for (String key : config.keySet()) {
-
 			if (key.equals("SecretId")) {
-				setConfigSecretId(config.get(key).toString());
+				setSecretId(config.get(key));
 			} else if (key.equals("SecretKey")) {
-				setConfigSecretKey(config.get(key).toString());
+				setSecretKey(config.get(key));
 			} else if (key.equals("DefaultRegion")) {
-				setConfigDefaultRegion(config.get(key).toString());
+				setDefaultRegion(config.get(key));
 			} else if (key.equals("RequestMethod")) {
-				setConfigRequestMethod(config.get(key).toString());
+				setRequestMethod(config.get(key));
 			}
 		}
 	}
 
-	public void setConfigSecretId(String secretId) {
+	public void setSecretId(String secretId) {
 		this.secretId = secretId;
 	}
 
-	public void setConfigSecretKey(String secretKey) {
+	public void setSecretKey(String secretKey) {
 		this.secretKey = secretKey;
 	}
 
-	public void setConfigDefaultRegion(String region) {
+	public void setDefaultRegion(String region) {
 		this.defaultRegion = region;
 	}
 
-	public void setConfigRequestMethod(String method) {
+	public void setRequestMethod(String method) {
 		this.requestMethod = method;
 	}
 
@@ -80,7 +80,7 @@ public abstract class Base {
 		if (!params.containsKey("Region")) {
 			params.put("Region", defaultRegion);
 		}
-		
+
 		String response = Request.send(params, secretId, secretKey, requestMethod, serverHost, serverUri, file);
 		return response;
 	}
