@@ -10,8 +10,8 @@ import com.qcloud.api.common.RequestClient;
  */
 public class Config {
 
-	private static final String secretId = "AKIDc7nRqE2zj4Ofv1wXHbhaYTba4sCIjazr";
-	private static final String secretKey = "cfwMPsQIYhFM7H0VjzeAOgNE4AzNvutg";
+	private static final String secretId = "你的SecretId";
+	private static final String secretKey = "你的SecretKey";
 
 	public static IdentityConfig identityConfig = new IdentityConfig(secretId, secretKey);
 

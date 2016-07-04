@@ -79,13 +79,13 @@ public class AllInOneTest {
 
 	@Test
 	public void DescribeVodPlayInfoTest() {
-		DescribeVodPlayInfoResponse response = new DescribeVodPlayInfoService(caller).call("W", null, null);
+		DescribeVodPlayInfoResponse response = new DescribeVodPlayInfoService(caller).call("61", null, null);
 		Assert.assertTrue(response.isSuccess());
 	}
 
 	@Test
 	public void DescribeVodPlayUrlsTest() {
-		DescribeVodPlayUrlsResponse response = new DescribeVodPlayUrlsService(caller).call("14651978969259967260");
+		DescribeVodPlayUrlsResponse response = new DescribeVodPlayUrlsService(caller).call("14651978969260186404");
 		Assert.assertTrue(response.isSuccess());
 	}
 

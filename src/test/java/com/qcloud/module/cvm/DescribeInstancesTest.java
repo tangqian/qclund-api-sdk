@@ -17,8 +17,8 @@ public class DescribeInstancesTest {
 	public static void main(String[] args) {
 		/* 如果是循环调用下面举例的接口，需要从此处开始你的循环语句。切记！ */
 		Map<String, String> config = new TreeMap<String, String>();
-		config.put("SecretId", "AKIDc7nRqE2zj4Ofv1wXHbhaYTba4sCIjazr");
-		config.put("SecretKey", "cfwMPsQIYhFM7H0VjzeAOgNE4AzNvutg");
+		config.put("SecretId", "你的SecretId");
+		config.put("SecretKey", "你的SecretKey");
 		/* 请求方法类型 POST、GET */
 		config.put("RequestMethod", "GET");
 		/* 区域参数，可选: gz:广州; sh:上海; hk:香港; ca:北美;等。 */

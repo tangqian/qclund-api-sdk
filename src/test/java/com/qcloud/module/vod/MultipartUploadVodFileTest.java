@@ -19,8 +19,8 @@ public class MultipartUploadVodFileTest {
 	public static void main(String[] args) {
 		Map<String, String> config = new HashMap<String, String>();
 
-		config.put("SecretId", "AKIDc7nRqE2zj4Ofv1wXHbhaYTba4sCIjazr");
-		config.put("SecretKey", "cfwMPsQIYhFM7H0VjzeAOgNE4AzNvutg");
+		config.put("SecretId", "你的SecretId");
+		config.put("SecretKey", "你的SecretKey");
 		config.put("RequestMethod", "POST");
 		config.put("DefaultRegion", "gz");
 		QcloudApiModuleCenter module = new QcloudApiModuleCenter(new Vod(), config);
