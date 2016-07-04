@@ -48,14 +48,14 @@ public class MultipartUploadVodFileService extends VodBaseService<MultipartUploa
 		MultipartUploadVodFileResponse result = null;
 		File file = new File(srcFilePath);
 		if (!file.isFile()) {
-			result = MultipartUploadVodFileResponse.newFailInsatance();
+			result = MultipartUploadVodFileResponse.newFailInstance();
 			result.setMessage("源文件不存在");
 			return result;
 		}
 
 		String fileType = getFileType(srcFilePath);
 		if (fileType == null) {
-			result = MultipartUploadVodFileResponse.newFailInsatance();
+			result = MultipartUploadVodFileResponse.newFailInstance();
 			result.setMessage("源文件类型未知，请检查后文件后缀名");
 			return result;
 		}

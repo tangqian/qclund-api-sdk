@@ -36,17 +36,22 @@ public final class RequestClient {
 	private static final Logger logger = LoggerFactory.getLogger(RequestClient.class);
 	private static final String VERSION = "SDK_JAVA_1.3";
 	private static final Random RANDOM = new Random(System.currentTimeMillis());
-	private static final int TIME_OUT = 3000;// 设置连接主机的超时时间，单位：毫秒，可以根据实际需求合理更改timeOut的值。
 	private static final int PAGE_SIZE = 4 * 1024;//每次写入页面大小
+	private final int timeOut;// 设置连接主机的超时时间，单位：毫秒，可以根据实际需求合理更改timeOut的值。
 
 	private IdentityConfig identity;
 
 	private String requestUrl;
 
 	private String rawResponse;
+	
+	public RequestClient(IdentityConfig identity){
+		this(identity, 1000);
+	}
 
-	public RequestClient(IdentityConfig identity) {
+	public RequestClient(IdentityConfig identity, int timeOut) {
 		this.identity = identity;
+		this.timeOut = timeOut;
 	}
 
 	public String getRequestUrl() {
@@ -55,21 +60,6 @@ public final class RequestClient {
 
 	public String getRawResponse() {
 		return rawResponse;
-	}
-
-	public String generateUrl(String requestMethod, String requestUrl, TreeMap<String, Object> params) throws UnsupportedEncodingException {
-		initParam(requestMethod, requestUrl, params);
-		if (params.get("Action").toString().equals("MultipartUploadVodFile")) {
-			String url = combineHttpUrl(requestUrl);
-			url = combineParmas2Url(url, params);
-			return url;
-		} else {
-			String url = combineHttpsUrl(requestUrl);
-			if (requestMethod.equals("GET")) {
-				url = combineParmas2Url(url, params);
-			}
-			return url;
-		}
 	}
 
 	public String send(String requestMethod, String requestUrl, TreeMap<String, Object> params, File file) {
@@ -288,7 +278,7 @@ public final class RequestClient {
 		out.close();
 	}
 
-	private static URLConnection getConnection(String url) throws IOException {
+	private URLConnection getConnection(String url) throws IOException {
 		URLConnection connection = null;
 		URL realUrl = new URL(url);
 		if (url.toLowerCase().startsWith("https")) {
@@ -309,7 +299,7 @@ public final class RequestClient {
 		connection.setRequestProperty("connection", "Keep-Alive");
 		connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
 		// 设置链接主机超时时间
-		connection.setConnectTimeout(TIME_OUT);
+		connection.setConnectTimeout(timeOut);
 		return connection;
 	}
 

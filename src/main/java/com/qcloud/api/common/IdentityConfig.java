@@ -6,9 +6,9 @@ package com.qcloud.api.common;
  */
 public class IdentityConfig {
 
-	private String secretId;
+	private final String secretId;
 	
-	private String secretKey;
+	private final String secretKey;
 	
 	public IdentityConfig(String secretId, String secretKey) {
 		this.secretId = secretId;

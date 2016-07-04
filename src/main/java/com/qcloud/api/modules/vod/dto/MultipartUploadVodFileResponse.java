@@ -30,7 +30,7 @@ public class MultipartUploadVodFileResponse extends CloudBaseResponse {
 		setCode(code);
 	}
 	
-	public static MultipartUploadVodFileResponse newFailInsatance(){
+	public static MultipartUploadVodFileResponse newFailInstance(){
 		return new MultipartUploadVodFileResponse(-1);
 	}
 

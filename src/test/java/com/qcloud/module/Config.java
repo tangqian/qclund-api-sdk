@@ -17,5 +17,5 @@ public class Config {
 
 	public static RequestClient client = new RequestClient(identityConfig);
 	
-	public static VodModuleCaller vodCaller = new VodModuleCaller(Config.client);
+	public static VodModuleCaller vodCaller = new VodModuleCaller(client);
 }
