@@ -32,7 +32,6 @@ import com.qcloud.api.modules.vod.service.ModifyClassService;
 import com.qcloud.api.modules.vod.service.ModifyVodInfoService;
 import com.qcloud.api.modules.vod.service.MultipartUploadVodFileService;
 import com.qcloud.api.modules.vod.service.SetVodPlayStatusService;
-import com.qcloud.module.Config;
 
 /**
  * @author tangqian

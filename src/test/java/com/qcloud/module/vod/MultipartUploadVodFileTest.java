@@ -37,14 +37,13 @@ public class MultipartUploadVodFileTest {
 			long remainderSize = fileSize;
 			int tmpOffset = 0;
 			int code, flag;
-			String fileId;
+			String fileId = null;
 			String result = null;
 
 			if (remainderSize <= 0) {
 				System.out.println("wrong file path...");
 			}
 			
-			int num = 0;
 			while (remainderSize > 0) {
 				TreeMap<String, Object> params = new TreeMap<String, Object>();
 				/*
@@ -74,9 +73,7 @@ public class MultipartUploadVodFileTest {
 				} else if (code != 0) {
 					return;
 				}
-				if(++num >=2){
-					break;
-				}
+				
 				flag = json_result.getIntValue("flag");
 				if (flag == 1) {
 					fileId = json_result.getString("fileId");
@@ -91,6 +88,7 @@ public class MultipartUploadVodFileTest {
 					tmpDataSize = (int) remainderSize;
 				}
 			}
+			System.out.println(fileId);
 			System.out.println("end...");
 		} catch (Exception e) {
 			e.printStackTrace();

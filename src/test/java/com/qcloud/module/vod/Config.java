@@ -1,4 +1,4 @@
-package com.qcloud.module;
+package com.qcloud.module.vod;
 
 import com.qcloud.api.callers.VodModuleCaller;
 import com.qcloud.api.common.IdentityConfig;
