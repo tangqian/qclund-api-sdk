@@ -28,6 +28,7 @@ public abstract class AbstractCloudService<T extends CloudBaseResponse> implemen
 				logger.error("Call Action Error#", result);
 			}
 		} catch (Exception e) {
+			System.out.println(e);
 			logger.error("Call Action exception", e);
 		}
 		return result;

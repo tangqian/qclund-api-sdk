@@ -104,6 +104,7 @@ public class Request {
 		params.put("RequestClient", version);
 
 		String plainText = Sign.makeSignPlainText(requestMethod, requestHost+requestPath, params);
+		System.out.println(plainText);
 		try {
 			params.put("Signature", Sign.sign(plainText, secretKey));
 		} catch (Exception e) {
@@ -171,6 +172,7 @@ public class Request {
 		BufferedReader in = null;
 		try {
 			requestUrl = url;
+			System.out.println(url);
 			URLConnection connection = getConnection(url);
 			connection.setDoOutput(true);
 			connection.setDoInput(true);

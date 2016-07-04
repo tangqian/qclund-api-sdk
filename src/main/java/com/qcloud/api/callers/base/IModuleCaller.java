@@ -23,9 +23,11 @@ public interface IModuleCaller {
 
 	/**
 	 * 获取模块请求域名
+	 * @param actionName
+	 *            接口名
 	 * @return 类似点播服务为vod.api.qcloud.com
 	 */
-	String getServerHost();
+	String getServerHost(String actionName);
 
 	/**
 	 * 获取默认区域参数

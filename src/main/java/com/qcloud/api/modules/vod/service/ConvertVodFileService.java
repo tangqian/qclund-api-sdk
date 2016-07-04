@@ -37,11 +37,11 @@ public class ConvertVodFileService extends VodBaseService<CloudBaseResponse> {
 	public CloudBaseResponse call(String fileId, Integer isScreenshot, Integer isWatermark, String notifyUrl) {
 		TreeMap<String, Object> params = new TreeMap<String, Object>();
 		params.put("fileId", fileId);
-		if(isScreenshot == null)
+		if(isScreenshot != null)
 			params.put("isScreenshot", isScreenshot);
-		if(isWatermark == null)
+		if(isWatermark != null)
 			params.put("isWatermark", isWatermark);
-		if(notifyUrl == null)
+		if(notifyUrl != null)
 			params.put("notifyUrl", notifyUrl);		
 		
 		CloudBaseResponse result = callVodAction(params, "GET");

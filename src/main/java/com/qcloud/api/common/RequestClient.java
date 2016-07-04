@@ -34,9 +34,10 @@ import com.qcloud.utils.MD5;
 public final class RequestClient {
 
 	private static final Logger logger = LoggerFactory.getLogger(RequestClient.class);
-	private static final String version = "SDK_JAVA_1.3";
-	private static final Random random = new Random(System.currentTimeMillis());
-	private static final int timeOut = 100;// 设置连接主机的超时时间，单位：毫秒，可以根据实际需求合理更改timeOut的值。
+	private static final String VERSION = "SDK_JAVA_1.3";
+	private static final Random RANDOM = new Random(System.currentTimeMillis());
+	private static final int TIME_OUT = 3000;// 设置连接主机的超时时间，单位：毫秒，可以根据实际需求合理更改timeOut的值。
+	private static final int PAGE_SIZE = 4 * 1024;//每次写入页面大小
 
 	private IdentityConfig identity;
 
@@ -98,14 +99,15 @@ public final class RequestClient {
 			params.put("SecretId", identity.getSecretId());
 
 		if (!params.containsKey("Nonce"))
-			params.put("Nonce", random.nextInt(java.lang.Integer.MAX_VALUE));
+			params.put("Nonce", RANDOM.nextInt(java.lang.Integer.MAX_VALUE));
 
 		if (!params.containsKey("Timestamp"))
 			params.put("Timestamp", System.currentTimeMillis() / 1000);
 
-		params.put("RequestClient", version);
+		params.put("RequestClient", VERSION);
 
 		String plainText = Sign.makeSignPlainText(requestMethod, requestUrl, params);
+		System.out.println(plainText);
 		try {
 			params.put("Signature", Sign.sign(plainText, identity.getSecretKey()));
 		} catch (Exception e) {
@@ -169,6 +171,7 @@ public final class RequestClient {
 		BufferedReader in = null;
 		try {
 			requestUrl = url;
+			System.out.println(url);
 			URLConnection connection = getConnection(url);
 			connection.setDoOutput(true);
 			connection.setDoInput(true);
@@ -176,26 +179,19 @@ public final class RequestClient {
 			long file_length = (Long) requestParams.get("fileSize");
 			OutputStream out = new DataOutputStream(connection.getOutputStream());
 			DataInputStream ins = new DataInputStream(new FileInputStream(file));
+			
 			int offset = ((Integer) requestParams.get("offset")).intValue();
-			int dataSize = ((Integer) requestParams.get("dataSize")).intValue();
 			if (offset >= file_length) {
 				return "{\"code\":-3001,\"location\":\"com.qcloud.Common.Request:303\",\"message\":\"api sdk throw exception! offset larger than the size of file\"}";
 			}
 			ins.skipBytes(offset);
-			int page = dataSize / 1024;
-			int remainder = dataSize % 1024;
-			int bytes = 0;
-			byte[] bufferOut = new byte[1024];
-			byte[] bufferOut2 = new byte[remainder];
-			while (page != 0) {
-				if ((bytes = ins.read(bufferOut)) != -1) {
-					out.write(bufferOut, 0, bytes);
-				}
-				page = page - 1;
-			}
-			if ((bytes = ins.read(bufferOut2)) != -1) {
-				out.write(bufferOut2, 0, bytes);
-			}
+			System.out.println("----start upload--------");
+			System.out.println("offset=" + offset);
+			int dataSize = ((Integer) requestParams.get("dataSize")).intValue();
+			System.out.println("dataSize=" + dataSize);
+			
+			writeData(ins, out, dataSize);
+			
 			ins.close();
 			out.flush();
 			out.close();
@@ -205,6 +201,7 @@ public final class RequestClient {
 			in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			result = getResponse(in);
 		} catch (Exception e) {
+			System.out.println(e);
 			logger.error("com.qcloud.Common.Request:345", e);
 			result = "{\"code\":-3000,\"location\":\"com.qcloud.Common.Request:345\",\"message\":\"api sdk throw exception! " + e.toString() + "\"}";
 		} finally {
@@ -220,6 +217,23 @@ public final class RequestClient {
 		}
 		rawResponse = result;
 		return result;
+	}
+
+	private void writeData(DataInputStream ins, OutputStream out, int dataSize) throws IOException {
+		int page = dataSize / PAGE_SIZE;
+		int remainder = dataSize % PAGE_SIZE;
+		int bytes = 0;
+		byte[] bufferOut = new byte[PAGE_SIZE];
+		byte[] bufferOut2 = new byte[remainder];
+		while (page != 0) {
+			if ((bytes = ins.read(bufferOut)) != -1) {
+				out.write(bufferOut, 0, bytes);
+			}
+			page = page - 1;
+		}
+		if ((bytes = ins.read(bufferOut2)) != -1) {
+			out.write(bufferOut2, 0, bytes);
+		}
 	}
 
 	private static String getResponse(BufferedReader in) throws IOException {
@@ -295,7 +309,7 @@ public final class RequestClient {
 		connection.setRequestProperty("connection", "Keep-Alive");
 		connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
 		// 设置链接主机超时时间
-		connection.setConnectTimeout(timeOut);
+		connection.setConnectTimeout(TIME_OUT);
 		return connection;
 	}
 

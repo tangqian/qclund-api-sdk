@@ -4,6 +4,8 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.qcloud.api.common.RequestClient;
 
 /**
@@ -12,7 +14,7 @@ import com.qcloud.api.common.RequestClient;
  */
 public abstract class AbstractModuleCaller implements IModuleCaller {
 
-	private static final String serverPath = "/v2/index.php";
+	private static final String SERVER_PATH = "/v2/index.php";
 	
 	private String defaultRegion = "gz";
 
@@ -45,18 +47,14 @@ public abstract class AbstractModuleCaller implements IModuleCaller {
 	protected final String doRequest(String actionName, TreeMap<String, Object> params, String requestMethod, File file) {
 		if (params == null)
 			params = new TreeMap<String, Object>();
-		params.put("Action", ucFirst(actionName));
+		params.put("Action", StringUtils.capitalize(actionName));
 		if (!params.containsKey("Region")) {
 			params.put("Region", getDefaultRegion());
 		}
-		String response = getRequestClient().send(requestMethod, getServerHost() + serverPath, params, file);
+		String response = getRequestClient().send(requestMethod, getServerHost(actionName) + SERVER_PATH, params, file);
 		return response;
 	}
 
 	public abstract RequestClient getRequestClient();
-
-	private String ucFirst(String word) {
-		return word.replaceFirst(word.substring(0, 1), word.substring(0, 1).toUpperCase());
-	}
 
 }

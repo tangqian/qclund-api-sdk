@@ -17,12 +17,16 @@ public class VodModuleCaller extends AbstractModuleCaller {
 	
 	private RequestClient client;
 	
+	private static final String UPLOAD_ACTION_NAME = "MultipartUploadVodFile";
+	
 	public VodModuleCaller(RequestClient client) {
 		this.client = client;
 	}
 
 	@Override
-	public String getServerHost() {
+	public String getServerHost(String actionName) {
+		if(actionName.equals(UPLOAD_ACTION_NAME))
+			return "vod.qcloud.com";
 		return "vod.api.qcloud.com";
 	}
 
