@@ -15,24 +15,25 @@ import com.qcloud.utils.SHA1;
  */
 public class VodModuleCaller extends AbstractModuleCaller {
 	
-	private RequestClient client;
-	
-	private static final String UPLOAD_ACTION_NAME = "MultipartUploadVodFile";
-	
 	public VodModuleCaller(RequestClient client) {
-		this.client = client;
+		super(client, null);
 	}
+	
+	/**
+	 * @param client
+	 * @param defaultRegion
+	 */
+	public VodModuleCaller(RequestClient client, String defaultRegion) {
+		super(client, defaultRegion);
+	}
+
+	private static final String UPLOAD_ACTION_NAME = "MultipartUploadVodFile";
 
 	@Override
 	public String getServerHost(String actionName) {
 		if(actionName.equals(UPLOAD_ACTION_NAME))
 			return "vod.qcloud.com";
 		return "vod.api.qcloud.com";
-	}
-
-	@Override
-	public RequestClient getRequestClient() {
-		return client;
 	}
 	
 	public String MultipartUploadVodFile(TreeMap<String, Object> params, String requestMethod) throws NoSuchAlgorithmException, IOException {

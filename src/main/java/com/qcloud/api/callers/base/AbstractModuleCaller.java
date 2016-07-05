@@ -15,21 +15,25 @@ import com.qcloud.api.common.RequestClient;
 public abstract class AbstractModuleCaller implements IModuleCaller {
 
 	private static final String SERVER_PATH = "/v2/index.php";
-	
+
+	private RequestClient client;
+
 	private String defaultRegion = "gz";
+
+	public AbstractModuleCaller(RequestClient client, String defaultRegion) {
+		this.client = client;
+		if (defaultRegion != null)
+			this.defaultRegion = defaultRegion;
+	}
 
 	@Override
 	public String getDefaultRegion() {
 		return defaultRegion;
 	}
-	
-	public void setDefaultRegion(String region){
-		defaultRegion = region;
-	}
 
 	@Override
 	public final String request(String actionName, TreeMap<String, Object> params, String requestMethod) throws Exception {
-		if(requestMethod == null || !requestMethod.equals("POST")){
+		if (requestMethod == null || !requestMethod.equals("POST")) {
 			requestMethod = "GET";
 		}
 		for (Method method : getClass().getMethods()) {
@@ -51,10 +55,8 @@ public abstract class AbstractModuleCaller implements IModuleCaller {
 		if (!params.containsKey("Region")) {
 			params.put("Region", getDefaultRegion());
 		}
-		String response = getRequestClient().send(requestMethod, getServerHost(actionName) + SERVER_PATH, params, file);
+		String response = client.send(requestMethod, getServerHost(actionName) + SERVER_PATH, params, file);
 		return response;
 	}
-
-	public abstract RequestClient getRequestClient();
 
 }

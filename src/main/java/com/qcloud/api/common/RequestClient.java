@@ -97,7 +97,6 @@ public final class RequestClient {
 		params.put("RequestClient", VERSION);
 
 		String plainText = Sign.makeSignPlainText(requestMethod, requestUrl, params);
-		System.out.println(plainText);
 		try {
 			params.put("Signature", Sign.sign(plainText, identity.getSecretKey()));
 		} catch (Exception e) {
@@ -175,11 +174,8 @@ public final class RequestClient {
 				return "{\"code\":-3001,\"location\":\"com.qcloud.Common.Request:303\",\"message\":\"api sdk throw exception! offset larger than the size of file\"}";
 			}
 			ins.skipBytes(offset);
-			System.out.println("----start upload--------");
-			System.out.println("offset=" + offset);
-			int dataSize = ((Integer) requestParams.get("dataSize")).intValue();
-			System.out.println("dataSize=" + dataSize);
 			
+			int dataSize = ((Integer) requestParams.get("dataSize")).intValue();
 			writeData(ins, out, dataSize);
 			
 			ins.close();
@@ -191,7 +187,6 @@ public final class RequestClient {
 			in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			result = getResponse(in);
 		} catch (Exception e) {
-			System.out.println(e);
 			logger.error("com.qcloud.Common.Request:345", e);
 			result = "{\"code\":-3000,\"location\":\"com.qcloud.Common.Request:345\",\"message\":\"api sdk throw exception! " + e.toString() + "\"}";
 		} finally {

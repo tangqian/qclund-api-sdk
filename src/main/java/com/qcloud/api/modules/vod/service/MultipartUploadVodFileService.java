@@ -63,7 +63,6 @@ public class MultipartUploadVodFileService extends VodBaseService<MultipartUploa
 		if(fileName == null){
 			fileName = file.getName();
 		}
-		System.out.println(fileName);
 		try {
 			long fileSize = file.length();
 			String fileSHA1 = SHA1.fileNameToSHA(srcFilePath);
@@ -87,7 +86,6 @@ public class MultipartUploadVodFileService extends VodBaseService<MultipartUploa
 				params.put("dataSize", tmpDataSize);
 				params.put("offset", tmpOffset);
 
-				System.out.println("--do while upload--");
 				result = callVodAction(params, "POST");
 				
 				if (result.getCode() == -3002) { // 服务器异常返回，需要重试上传(offset=0, dataSize=10K,满足大多数视频的上传)
@@ -111,7 +109,6 @@ public class MultipartUploadVodFileService extends VodBaseService<MultipartUploa
 				}
 			}
 		} catch (Exception e) {
-			System.out.println(e);
 			logger.error("Upload file Fail，srcFilePath={}", srcFilePath);
 			logger.error("Exception happens,", e);
 		}
