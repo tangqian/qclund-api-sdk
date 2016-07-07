@@ -160,7 +160,6 @@ public final class RequestClient {
 		BufferedReader in = null;
 		try {
 			requestUrl = url;
-			System.out.println(url);
 			URLConnection connection = getConnection(url);
 			connection.setDoOutput(true);
 			connection.setDoInput(true);

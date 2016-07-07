@@ -23,12 +23,10 @@ public abstract class AbstractCloudService<T extends CloudBaseResponse> implemen
 			String response = caller.request(getActionName(), params, requestMethod);
 			System.out.println(response);
 			result = FastJsonUtils.parseObject(response, getResponseClass());
-			System.out.println(result);
 			if(!result.isSuccess()){
-				logger.error("Call Action Error#", result);
+				logger.error("Call Action Error#,result={}", result);
 			}
 		} catch (Exception e) {
-			System.out.println(e);
 			logger.error("Call Action exception", e);
 		}
 		return result;
