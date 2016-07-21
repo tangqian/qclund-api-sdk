@@ -37,7 +37,8 @@ public final class RequestClient {
 	private static final String VERSION = "SDK_JAVA_1.3";
 	private static final Random RANDOM = new Random(System.currentTimeMillis());
 	private static final int PAGE_SIZE = 4 * 1024;//每次写入页面大小
-	private final int timeOut;// 设置连接主机的超时时间，单位：毫秒，可以根据实际需求合理更改timeOut的值。
+	private final int connectTimeout;// 设置连接主机的超时时间，单位：毫秒，可以根据实际需求合理更改timeOut的值。
+	private final int readTimeout;// 设置读取数据超时时间，单位：毫秒。
 
 	private IdentityConfig identity;
 
@@ -46,12 +47,13 @@ public final class RequestClient {
 	private String rawResponse;
 	
 	public RequestClient(IdentityConfig identity){
-		this(identity, 1000);
+		this(identity, 3000, 10000);
 	}
 
-	public RequestClient(IdentityConfig identity, int timeOut) {
+	public RequestClient(IdentityConfig identity, int connectTimeout, int readTimeout) {
 		this.identity = identity;
-		this.timeOut = timeOut;
+		this.connectTimeout = connectTimeout;
+		this.readTimeout = readTimeout;
 	}
 
 	public String getRequestUrl() {
@@ -293,7 +295,8 @@ public final class RequestClient {
 		connection.setRequestProperty("connection", "Keep-Alive");
 		connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
 		// 设置链接主机超时时间
-		connection.setConnectTimeout(timeOut);
+		connection.setConnectTimeout(connectTimeout);
+		connection.setReadTimeout(readTimeout);
 		return connection;
 	}
 

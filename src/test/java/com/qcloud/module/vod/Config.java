@@ -1,5 +1,6 @@
 package com.qcloud.module.vod;
 
+import com.qcloud.api.callers.LiveModuleCaller;
 import com.qcloud.api.callers.VodModuleCaller;
 import com.qcloud.api.common.IdentityConfig;
 import com.qcloud.api.common.RequestClient;
@@ -18,4 +19,6 @@ public class Config {
 	public static RequestClient client = new RequestClient(identityConfig);
 	
 	public static VodModuleCaller vodCaller = new VodModuleCaller(client);
+	
+	public static LiveModuleCaller liveCaller = new LiveModuleCaller(client);
 }
