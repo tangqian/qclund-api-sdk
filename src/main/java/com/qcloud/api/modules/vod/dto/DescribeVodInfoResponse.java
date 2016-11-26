@@ -33,7 +33,7 @@ public class DescribeVodInfoResponse extends CloudBaseResponse {
 	public static class VodInfo {
 		private String fileId;
 		private String fileName;
-		private int size;
+		private long size;
 		/**
 		 * 视频时长，秒为单位
 		 */
@@ -91,11 +91,11 @@ public class DescribeVodInfoResponse extends CloudBaseResponse {
 			this.imageUrl = imageUrl;
 		}
 
-		public int getSize() {
+		public long getSize() {
 			return size;
 		}
 
-		public void setSize(int size) {
+		public void setSize(long size) {
 			this.size = size;
 		}
 
