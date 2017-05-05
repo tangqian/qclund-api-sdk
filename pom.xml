@@ -49,16 +49,8 @@
 		</dependency>
 	</dependencies>
 
-	<distributionManagement>
-		<repository>
-			<id>nexus-releases</id>
-			<name>netwaymedia release</name>
-			<url>http://192.168.2.180:9045/nexus/content/repositories/releases/</url>
-		</repository>
-	</distributionManagement>
-
 	<build>
-		<defaultGoal>deploy</defaultGoal>
+		<defaultGoal>install</defaultGoal>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
